@@ -11,6 +11,8 @@ using TechJobsPersistent.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
+
+
 namespace TechJobsPersistent.Controllers
 {
     public class HomeController : Controller
@@ -32,13 +34,40 @@ namespace TechJobsPersistent.Controllers
         [HttpGet("/Add")]
         public IActionResult AddJob()
         {
+            List<Employer> employers = context.Employers.ToList();
+            List<Skill> skills = context.Skills.ToList();
+
+            AddJobViewModel jobViewModel = new AddJobViewModel(employers,skills);
+
+            return View(jobViewModel);
+           
+        }
+
+        public IActionResult ProcessAddJobForm(AddJobViewModel addJobViewModel)
+        {
+
             return View();
         }
 
-        public IActionResult ProcessAddJobForm()
-        {
-            return View();
-        }
+
+        //[HttpPost]
+        //public IActionResult ProcessCreateEventCategoryForm(AddEventCategoryViewModel addEventCategoryViewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        EventCategory newCategory = new EventCategory
+        //        {
+        //            Name = addEventCategoryViewModel.Name
+        //        };
+
+        //        context.Categories.Add(newCategory);
+        //        context.SaveChanges();
+
+        //        return Redirect("/EventCategory");
+        //    }
+
+        //    return View("Create", addEventCategoryViewModel);
+        //}
 
         public IActionResult Detail(int id)
         {
