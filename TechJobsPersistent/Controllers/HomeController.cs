@@ -43,31 +43,37 @@ namespace TechJobsPersistent.Controllers
            
         }
 
-        public IActionResult ProcessAddJobForm(AddJobViewModel addJobViewModel)
+        public IActionResult ProcessAddJobForm(AddJobViewModel addJobViewModel, string[] SelectedSkills)
         {
+            if (ModelState.IsValid)
+            {
+                Job newJob = new Job
+                {
+                    Name = addJobViewModel.Name,
+                    Employer = context.Employers.Find(addJobViewModel.EmployerId),
+                    EmployerId = addJobViewModel.EmployerId
 
-            return View();
+                };
+                foreach (var selectedskill in SelectedSkills)
+                {
+                    JobSkill newJobSkill = new JobSkill
+                    {
+                     Job = newJob,
+                     JobId = newJob.Id,
+                    Skill= context.Skills.Find(int.Parse(selectedskill))
+                    };
+                context.JobSkills.Add(newJobSkill);
+
+                }
+
+            context.Jobs.Add(newJob);
+            context.SaveChanges();
+            return Redirect("/Home");
+            }
+
+            return View("AddJob", addJobViewModel);
         }
 
-
-        //[HttpPost]
-        //public IActionResult ProcessCreateEventCategoryForm(AddEventCategoryViewModel addEventCategoryViewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        EventCategory newCategory = new EventCategory
-        //        {
-        //            Name = addEventCategoryViewModel.Name
-        //        };
-
-        //        context.Categories.Add(newCategory);
-        //        context.SaveChanges();
-
-        //        return Redirect("/EventCategory");
-        //    }
-
-        //    return View("Create", addEventCategoryViewModel);
-        //}
 
         public IActionResult Detail(int id)
         {
